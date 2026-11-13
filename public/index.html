@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tugas Rafi Fauzan Ramadhan</title>
+<script src="lib/pdf.min.js"></script>
+<script src="lib/pdf.worker.min.js"></script>
+<style>
+:root{--bg:#f8f9fa;--surf:#fff;--tx:#1a1a1a;--mu:#6b7280;--bd:#e5e7eb;--ac:#dc2626;--ac2:#991b1b;--act:#fff;--sh:0 8px 30px rgba(220,38,38,.08);--dan:#dc2626;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0c0a0a;--surf:#161212;--tx:#f9fafb;--mu:#9ca3af;--bd:#292020;--ac:#ef4444;--ac2:#b91c1c;--act:#fff;--sh:0 8px 30px rgba(0,0,0,.5);--dan:#f87171}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0c0a0a;--surf:#161212;--tx:#f9fafb;--mu:#9ca3af;--bd:#292020;--ac:#ef4444;--ac2:#b91c1c;--act:#fff;--sh:0 8px 30px rgba(0,0,0,.5);--dan:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.logo{font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;color:var(--act);font-style:normal;font-size:15px}
+.links{display:flex;gap:4px;align-items:center}
+.links a{color:var(--mu);text-decoration:none;padding:8px 12px;border-radius:10px;font-size:14px;transition:.2s}
+.links a:hover{color:var(--tx);background:var(--surf)}
+button{font:inherit;cursor:pointer;border:0;transition:transform .15s,box-shadow .2s,background .2s}
+button:active{transform:scale(.97)}
+.btn{background:linear-gradient(135deg,var(--ac),var(--ac2));color:var(--act);padding:10px 18px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 35%,transparent)}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:var(--surf);color:var(--tx);border:1px solid var(--bd);box-shadow:none}
+.btn.danger{background:var(--dan);color:#fff;box-shadow:none}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.hero{padding:64px 0 36px;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.chip{display:inline-block;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac);padding:5px 12px;border-radius:99px;font-size:13px;font-weight:600}
+h1{font-size:clamp(30px,5.5vw,52px);line-height:1.1;margin:14px 0 10px;letter-spacing:-.03em}
+h1 span{background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mu);max-width:520px}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:20px;box-shadow:var(--sh)}
+.profile{padding:24px}
+.profile h3{margin:16px 0 8px;font-size:15px}
+.profile p{margin:0 0 14px;color:var(--mu);font-size:14.5px}
+.av {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 12%;
+  display: block;
+  border: 3px solid var(--bd);
+  background: var(--bg);
+  margin-bottom: 4px;
+}
+.row{display:flex;gap:8px;flex-wrap:wrap;color:var(--mu);font-size:13px}
+.row b{color:var(--tx)}
+.bar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:36px 0 18px}
+.bar h2{margin:0;font-size:24px;letter-spacing:-.02em}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+input,textarea{font:inherit;color:var(--tx);background:var(--surf);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;width:100%;transition:.2s}
+input:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--ac) 55%,transparent);border-color:transparent}
+.search{width:240px;max-width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;padding-bottom:70px}
+.task{padding:20px;display:flex;flex-direction:column;gap:10px;animation:up .35s both;transition:transform .2s,box-shadow .2s}
+.task:hover{transform:translateY(-4px)}
+.task h3{margin:0;font-size:17px;line-height:1.3;overflow-wrap:anywhere}
+.task .d{color:var(--mu);font-size:13px}
+.task p{margin:0;color:var(--mu);font-size:14px;flex:1;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.acts{display:flex;gap:8px;align-items:center;margin-top:4px}
+.acts .btn:first-child{flex:1}
+.empty{grid-column:1/-1;text-align:center;padding:56px 20px;color:var(--mu)}
+.empty .ic{font-size:44px}
+.empty h3{color:var(--tx);margin:8px 0 4px}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.note{font-size:12.5px;color:var(--mu);margin:-6px 0 14px}
+footer{border-top:1px solid var(--bd);padding:22px 0;color:var(--mu);font-size:13px;text-align:center}
+.ov{position:fixed;inset:0;background:rgba(12,10,10,.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;animation:fade .2s}
+.ov.on{display:flex}
+@keyframes fade{from{opacity:0}}
+.modal{width:100%;max-width:480px;padding:24px;animation:up .25s;max-height:100%;overflow:auto}
+.modal h3{margin:0 0 16px}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+.drop{border:2px dashed var(--bd);border-radius:14px;padding:18px;text-align:center;color:var(--mu);font-size:14px;cursor:pointer;transition:.2s}
+.drop:hover,.drop.h{border-color:var(--ac);color:var(--ac)}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.err{color:var(--dan);font-size:13px;min-height:18px;margin-top:8px}
+#reader{position:fixed;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#reader.on{display:flex;animation:fade .25s}
+.rh{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--surf);flex-wrap:wrap}
+.rh .t{font-weight:600;flex:1;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctl{display:flex;align-items:center;gap:6px;font-size:14px}
+.ctl button{width:34px;height:34px;border-radius:10px;background:var(--bg);border:1px solid var(--bd);color:var(--tx)}
+.ctl button:hover{background:var(--bd)}
+.ctl span{min-width:62px;text-align:center;font-variant-numeric:tabular-nums}
+#stage{flex:1;overflow:auto;padding:20px;background:color-mix(in srgb,var(--bg) 70%,#444);text-align:center;-webkit-overflow-scrolling:touch}
+#cv{background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.35);border-radius:4px;max-width:none}
+#msg{padding:40px;color:var(--mu)}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:36px}.links a.h{display:none}.search{width:100%}.tools{width:100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="logo"><i>R</i><span>Tugas Rafi</span></div>
+  <div class="links"><a class="h" href="#profil">Profil</a><a href="#tugas">Daftar Tugas</a><button class="btn ghost sm" id="login">Masuk Admin</button><button class="btn sm" id="navUp" hidden>＋ Upload</button></div>
+</div></nav>
+
+<header class="wrap hero" id="profil">
+  <div>
+    <span class="chip">Portofolio Tugas Kuliah</span>
+    <h1><span>Tugas</span> Rafi Fauzan Ramadhan</h1>
+    <p class="lead">Website untuk menyimpan dan mempublikasikan tugas kuliah. Pilih tugas di bawah dan baca langsung di browser, tanpa perlu mengunduh.</p>
+  </div>
+  <div class="card profile">
+    <img src="rapi.jpg" alt="Foto Rafi Fauzan Ramadhan" class="av">
+    <h3>Profil Mahasiswa</h3>
+    <p>Halo, saya Rafi Fauzan Ramadhan, saya adalah mahasiswa Teknik Informatika Universitas Perjuangan Tasikmalaya.</p>
+    <div class="row"><span>Nama: <b>Rafi Fauzan Ramadhan</b></span><span>NIM: <b>2503010052</b></span></div>
+  </div>
+</header>
+
+<main class="wrap" id="tugas">
+  <div class="bar">
+    <h2>Daftar Tugas <small id="cnt" style="color:var(--mu);font-weight:400;font-size:15px"></small></h2>
+    <div class="tools">
+      <input class="search" id="q" type="search" placeholder="Cari berdasarkan judul…">
+      <button class="btn" id="up" hidden>＋ Upload Tugas</button>
+    </div>
+  </div>
+  <div class="note" id="mode"></div>
+  <div class="grid" id="list"></div>
+</main>
+<footer>© <span id="yr"></span> Tugas Rafi Fauzan Ramadhan · NIM 2503010052</footer>
+
+<div class="ov" id="ovForm"><div class="card modal">
+  <h3 id="fTitle">Upload Tugas</h3>
+  <label for="fJudul">Judul Tugas</label><input id="fJudul" maxlength="120" placeholder="Contoh: Makalah Basis Data">
+  <label for="fDesc">Deskripsi Singkat</label><textarea id="fDesc" rows="3" maxlength="400" placeholder="Tentang apa tugas ini?"></textarea>
+  
+  <!-- Bagian yang diperbarui untuk mendukung PDF, Word, Excel -->
+  <label>File Dokumen (PDF, Word, Excel) <span id="fOpt" style="font-weight:400;color:var(--mu)"></span></label>
+  <div class="drop" id="drop">Klik atau seret file PDF/Word/Excel ke sini<br><b id="fName"></b></div>
+  <input type="file" id="fFile" accept="application/pdf,.pdf,.doc,.docx,.xls,.xlsx" hidden>
+  
+  <div class="err" id="fErr"></div>
+  <div class="mf"><button class="btn ghost" id="fCancel">Batal</button><button class="btn" id="fSave">Simpan</button></div>
+</div></div>
+
+<div class="ov" id="ovDel"><div class="card modal">
+  <h3>Hapus tugas?</h3><p id="dTxt" style="color:var(--mu);margin:0"></p>
+  <div class="mf"><button class="btn ghost" id="dNo">Batal</button><button class="btn danger" id="dYes">Hapus</button></div>
+</div></div>
+
+<div class="ov" id="ovLogin"><div class="card modal">
+  <h3>Masuk Admin</h3><label for="lPw">Password</label><input id="lPw" type="password" autocomplete="current-password">
+  <div class="err" id="lErr"></div>
+  <div class="mf"><button class="btn ghost" id="lCancel">Batal</button><button class="btn" id="lOk">Masuk</button></div>
+</div></div>
+
+<section id="reader" aria-label="Pembaca tugas">
+  <div class="rh">
+    <button class="btn ghost sm" id="rBack">← Kembali</button>
+    <div class="t" id="rTitle"></div>
+    <div class="ctl">
+      <button id="pPrev" aria-label="Halaman sebelumnya">‹</button><span id="pInfo">–</span><button id="pNext" aria-label="Halaman berikutnya">›</button>
+      <button id="zOut" aria-label="Perkecil">−</button><span id="zInfo">100%</span><button id="zIn" aria-label="Perbesar">+</button>
+      <button id="zFit" aria-label="Sesuaikan lebar" title="Sesuaikan lebar">⤢</button>
+    </div>
+  </div>
+  <div id="stage"><div id="msg">Memuat dokumen…</div><canvas id="cv" hidden></canvas></div>
+</section>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('#yr').textContent=new Date().getFullYear();
+const fmt=iso=>new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+let items=[],canWrite=false,editing=null,delId=null;
+
+/* ---------- Penyimpanan via server ---------- */
+let token=localStorage.getItem('tugasToken')||'';
+const H=(x={})=>({...(token?{Authorization:'Bearer '+token}:{}),...x});
+async function call(url,opt){const r=await fetch(url,opt);let j={};try{j=await r.json()}catch(e){}
+  if(r.status===401&&token){token='';localStorage.removeItem('tugasToken');setAdmin(false)}
+  if(!r.ok)throw new Error(j.error||'Gagal');return j}
+const store={
+  async refresh(){items=await call('/api/tugas');render()},
+  async add(m,f){await call('/api/tugas',{method:'POST',headers:H({'Content-Type':'application/octet-stream','X-Meta':encodeURIComponent(JSON.stringify(m)),'X-Filename':encodeURIComponent(f.name)}),body:f});await this.refresh()},
+  async upd(id,m,f){if(f)await call('/api/tugas/'+id,{method:'PUT',headers:H({'Content-Type':'application/octet-stream','X-Meta':encodeURIComponent(JSON.stringify(m)),'X-Filename':encodeURIComponent(f.name)}),body:f});
+    else await call('/api/tugas/'+id,{method:'PUT',headers:H({'Content-Type':'application/json'}),body:JSON.stringify(m)});await this.refresh()},
+  async del(id){await call('/api/tugas/'+id,{method:'DELETE',headers:H()});await this.refresh()},
+  async src(it){return{url:'/api/file/'+it.id}}
+};
+function setAdmin(v){canWrite=v;$('#up').hidden=$('#navUp').hidden=!v;$('#login').textContent=v?'Keluar':'Masuk Admin';$('#mode').textContent=v?'Mode admin aktif: Anda dapat mengunggah, mengedit, dan menghapus tugas.':'';render()}
+$('#login').onclick=()=>{if(canWrite){token='';localStorage.removeItem('tugasToken');setAdmin(false)}else{$('#lPw').value='';$('#lErr').textContent='';$('#ovLogin').classList.add('on');$('#lPw').focus()}};
+$('#lCancel').onclick=()=>$('#ovLogin').classList.remove('on');
+$('#lOk').onclick=async()=>{try{const r=await call('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('#lPw').value})});token=r.token;localStorage.setItem('tugasToken',token);$('#ovLogin').classList.remove('on');setAdmin(true)}catch(e){$('#lErr').textContent=e.message}};
+$('#lPw').onkeydown=e=>{if(e.key==='Enter')$('#lOk').click()};
+
+/* ---------- Render daftar ---------- */
+function render(){
+  const q=$('#q').value.trim().toLowerCase();
+  const list=items.filter(i=>(i.title||'').toLowerCase().includes(q)).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  $('#cnt').textContent=items.length?`(${list.length})`:'';
+  if(!list.length){
+    $('#list').innerHTML=items.length
+      ?`<div class="empty"><div class="ic">🔍</div><h3>Tugas tidak ditemukan</h3><p>Coba kata kunci lain.</p></div>`
+      :`<div class="empty"><div class="ic">📂</div><h3>Belum ada tugas yang diunggah</h3><p>${canWrite?'Klik “Upload Tugas” untuk menambahkan tugas pertama.':'Silakan kembali lagi nanti.'}</p></div>`;
+    return;
+  }
+  $('#list').innerHTML=list.map((i,n)=>`<article class="card task" style="animation-delay:${Math.min(n,8)*40}ms">
+    <div class="d">📅 ${fmt(i.createdAt)}</div><h3>${esc(i.title)}</h3><p>${esc(i.desc||'Tanpa deskripsi.')}</p>
+    <div class="acts"><button class="btn sm" data-r="${esc(i.id)}">📖 Baca Tugas</button>
+    ${canWrite?`<button class="btn ghost sm" data-e="${esc(i.id)}" aria-label="Edit">✏️</button><button class="btn ghost sm" data-d="${esc(i.id)}" aria-label="Hapus">🗑️</button>`:''}</div></article>`).join('');
+}
+$('#q').oninput=render;
+$('#list').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const id=b.dataset.r||b.dataset.e||b.dataset.d,it=items.find(x=>x.id===id);if(!it)return;
+  if(b.dataset.r)openReader(it);else if(b.dataset.e)openForm(it);else{delId=id;$('#dTxt').textContent=`“${it.title}” akan dihapus permanen.`;$('#ovDel').classList.add('on')}
+};
+
+/* ---------- Form upload / edit ---------- */
+let pick=null;
+function openForm(it){
+  editing=it||null;pick=null;
+  $('#fTitle').textContent=it?'Edit Tugas':'Upload Tugas';
+  $('#fJudul').value=it?it.title:'';$('#fDesc').value=it?it.desc||'':'';
+  $('#fName').textContent='';$('#fErr').textContent='';$('#fFile').value='';
+  $('#fOpt').textContent=it?'(kosongkan jika tidak ingin mengganti)':'';
+  $('#ovForm').classList.add('on');$('#fJudul').focus();
+}
+
+// Validasi ekstensi file di sisi client
+const setFile=f=>{
+  if(!f)return;
+  const ext = f.name.split('.').pop().toLowerCase();
+  const allowed = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
+  if(!allowed.includes(ext)){
+    $('#fErr').textContent='Hanya file PDF, Word, atau Excel yang didukung.';
+    return;
+  }
+  if(f.size>20*1024*1024){$('#fErr').textContent='Ukuran file maksimal 20 MB.';return}
+  pick=f;$('#fName').textContent=f.name;$('#fErr').textContent=''
+};
+
+$('#drop').onclick=()=>$('#fFile').click();
+$('#fFile').onchange=e=>setFile(e.target.files[0]);
+$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('h')};
+$('#drop').ondragleave=()=>$('#drop').classList.remove('h');
+$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('h');setFile(e.dataTransfer.files[0])};
+$('#up').onclick=$('#navUp').onclick=()=>openForm();
+$('#fCancel').onclick=()=>$('#ovForm').classList.remove('on');
+$('#fSave').onclick=async()=>{
+  const title=$('#fJudul').value.trim(),desc=$('#fDesc').value.trim();
+  if(!title)return $('#fErr').textContent='Judul tugas wajib diisi.';
+  if(!editing&&!pick)return $('#fErr').textContent='Pilih file dokumen terlebih dahulu.';
+  const b=$('#fSave');b.disabled=true;b.textContent='Menyimpan…';
+  try{
+    if(editing)await store.upd(editing.id,{title,desc},pick);
+    else await store.add({title,desc,createdAt:new Date().toISOString()},pick);
+    $('#ovForm').classList.remove('on');
+  }catch(e){$('#fErr').textContent='Gagal menyimpan: '+(e.message||e.code||'coba lagi.')}
+  b.disabled=false;b.textContent='Simpan';
+};
+$('#dNo').onclick=()=>$('#ovDel').classList.remove('on');
+$('#dYes').onclick=async()=>{try{await store.del(delId)}catch(e){alert('Gagal menghapus.')}$('#ovDel').classList.remove('on')};
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('mousedown',e=>{if(e.target===o)o.classList.remove('on')}));
+
+/* ---------- Canvas Reader (PDF.js) ---------- */
+let pdf=null,page=1,scale=1,fit=true,rendering=false,pending=false,tok=0;
+const cv=$('#cv'),stage=$('#stage');
+async function openReader(it){
+  // Cek apakah file berupa PDF atau bukan (.doc/.docx/.xls/.xlsx langsung diunduh/dibuka tab baru karena butuh office viewer khusus)
+  if(!it.fileName.toLowerCase().endsWith('.pdf')){
+    window.open('/api/file/'+it.id, '_blank');
+    return;
+  }
+  
+  $('#reader').classList.add('on');document.body.style.overflow='hidden';
+  $('#rTitle').textContent=it.title;cv.hidden=true;$('#msg').hidden=false;$('#msg').textContent='Memuat dokumen…';
+  const my=++tok;pdf=null;
+  try{
+    pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.min.js';
+    const s=await store.src(it);
+    let data=s.data;
+    if(!data){const r=await fetch(s.url);if(!r.ok)throw 0;data=await r.arrayBuffer()}
+    const d=await pdfjsLib.getDocument({data}).promise;
+    if(my!==tok)return;
+    pdf=d;page=1;fit=true;$('#msg').hidden=true;cv.hidden=false;draw();
+  }catch(e){$('#msg').textContent='Dokumen tidak dapat dibuka.'}
+}
+async function draw(){
+  if(!pdf)return;if(rendering){pending=true;return}
+  rendering=true;
+  try{
+    const pg=await pdf.getPage(page),base=pg.getViewport({scale:1});
+    if(fit)scale=Math.max(.3,Math.min(3,(stage.clientWidth-40)/base.width));
+    const vp=pg.getViewport({scale}),dpr=window.devicePixelRatio||1;
+    cv.width=Math.floor(vp.width*dpr);cv.height=Math.floor(vp.height*dpr);
+    cv.style.width=vp.width+'px';cv.style.height=vp.height+'px';
+    await pg.render({canvasContext:cv.getContext('2d'),viewport:vp,transform:dpr!==1?[dpr,0,0,dpr,0,0]:null}).promise;
+  }catch(e){}
+  rendering=false;
+  $('#pInfo').textContent=`${page} / ${pdf.numPages}`;$('#zInfo').textContent=Math.round(scale*100)+'%';
+  if(pending){pending=false;draw()}
+}
+const go=n=>{if(!pdf)return;page=Math.min(pdf.numPages,Math.max(1,n));stage.scrollTop=0;draw()};
+const zoom=f=>{fit=false;scale=Math.min(4,Math.max(.3,scale*f));draw()};
+$('#pPrev').onclick=()=>go(page-1);$('#pNext').onclick=()=>go(page+1);
+$('#zIn').onclick=()=>zoom(1.2);$('#zOut').onclick=()=>zoom(1/1.2);
+$('#zFit').onclick=()=>{fit=true;draw()};
+$('#rBack').onclick=closeReader;
+function closeReader(){$('#reader').classList.remove('on');document.body.style.overflow='';pdf=null;tok++}
+addEventListener('keydown',e=>{
+  if(!$('#reader').classList.contains('on'))return;
+  if(e.key==='Escape')closeReader();
+  else if(e.key==='ArrowRight'||e.key==='PageDown')go(page+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(page-1);
+  else if(e.key==='+'||e.key==='=')zoom(1.2);else if(e.key==='-')zoom(1/1.2);
+});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(fit)draw()},150)});
+
+/* ---------- Inisialisasi ---------- */
+(async()=>{
+  try{await store.refresh()}catch(e){$('#list').innerHTML='<div class="empty"><div class="ic">⚠️</div><h3>Server tidak dapat dihubungi</h3></div>'}
+  if(token){try{const r=await call('/api/me',{headers:H()});setAdmin(!!r.admin)}catch(e){}}
+  else setAdmin(false);
+})();
+</script>
+</body>
+</html>
