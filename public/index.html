@@ -62,8 +62,10 @@ input:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--ac) 55%,tra
 .task h3{margin:0;font-size:17px;line-height:1.3;overflow-wrap:anywhere}
 .task .d{color:var(--mu);font-size:13px}
 .task p{margin:0;color:var(--mu);font-size:14px;flex:1;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.acts{display:flex;gap:8px;align-items:center;margin-top:4px}
-.acts .btn:first-child{flex:1}
+.acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.acts .btn{white-space:nowrap}
+.acts .btn:first-child{flex:1 1 100%}
+.acts .btn.ghost{flex:1}
 .empty{grid-column:1/-1;text-align:center;padding:56px 20px;color:var(--mu)}
 .empty .ic{font-size:44px}
 .empty h3{color:var(--tx);margin:8px 0 4px}
@@ -93,6 +95,25 @@ label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
 #msg{padding:40px;color:var(--mu)}
 @media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:36px}.links a.h{display:none}.search{width:100%}.tools{width:100%}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+.tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--bd);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--mu)}
+.fileline{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--mu);flex-wrap:wrap}
+.fileline #fCur{overflow-wrap:anywhere}
+#fName{color:var(--tx);overflow-wrap:anywhere}
+#tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 auto 12px}
+#tabs button{padding:6px 14px;border-radius:10px;background:var(--surf);border:1px solid var(--bd);color:var(--tx);font-size:13px}
+#tabs button.on{background:var(--ac);color:var(--act);border-color:transparent}
+#doc{background:#fff;color:#1a1a1a;max-width:820px;margin:0 auto;padding:44px 52px;text-align:left;border-radius:4px;box-shadow:0 6px 30px rgba(0,0,0,.35);font-size:calc(16px*var(--z,1));line-height:1.6;overflow-wrap:anywhere}
+#doc h1{font-size:1.8em;line-height:1.25;letter-spacing:0;margin:.6em 0 .4em}
+#doc h2{font-size:1.45em;margin:.7em 0 .4em}#doc h3{font-size:1.2em;margin:.7em 0 .4em}
+#doc p{margin:0 0 .8em}#doc img{max-width:100%;height:auto}#doc a{color:#b91c1c}
+#doc table{border-collapse:collapse;max-width:100%}
+#doc td,#doc th{border:1px solid #d1d5db;padding:4px 8px;vertical-align:top}
+#doc.sheet{display:inline-block;vertical-align:top;max-width:100%;padding:0;overflow:auto;font-size:calc(13px*var(--z,1));line-height:1.4}
+#doc.sheet td{white-space:pre-wrap;min-width:56px;max-width:380px}
+#doc.sheet th{background:#f3f4f6;color:#6b7280;font-weight:600;text-align:center;position:sticky;top:0}
+#doc.sheet tbody th{position:static;left:0}
+@media(max-width:760px){#doc{padding:24px 18px}}
 </style>
 </head>
 <body>
@@ -137,9 +158,10 @@ label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
   <label>File Dokumen (PDF, Word, Excel) <span id="fOpt" style="font-weight:400;color:var(--mu)"></span></label>
   <div class="drop" id="drop">Klik atau seret file PDF/Word/Excel ke sini<br><b id="fName"></b></div>
   <input type="file" id="fFile" accept="application/pdf,.pdf,.doc,.docx,.xls,.xlsx" hidden>
+  <div class="fileline"><span id="fCur"></span><button class="btn ghost sm" id="fClear" hidden>✕ Hapus file terpilih</button></div>
   
   <div class="err" id="fErr"></div>
-  <div class="mf"><button class="btn ghost" id="fCancel">Batal</button><button class="btn" id="fSave">Simpan</button></div>
+  <div class="mf"><button class="btn danger sm" id="fDel" hidden style="margin-right:auto">🗑️ Hapus tugas</button><button class="btn ghost" id="fCancel">Batal</button><button class="btn" id="fSave">Simpan</button></div>
 </div></div>
 
 <div class="ov" id="ovDel"><div class="card modal">
@@ -158,12 +180,13 @@ label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
     <button class="btn ghost sm" id="rBack">← Kembali</button>
     <div class="t" id="rTitle"></div>
     <div class="ctl">
-      <button id="pPrev" aria-label="Halaman sebelumnya">‹</button><span id="pInfo">–</span><button id="pNext" aria-label="Halaman berikutnya">›</button>
+      <div class="ctl" id="pgNav"><button id="pPrev" aria-label="Halaman sebelumnya">‹</button><span id="pInfo">–</span><button id="pNext" aria-label="Halaman berikutnya">›</button></div>
       <button id="zOut" aria-label="Perkecil">−</button><span id="zInfo">100%</span><button id="zIn" aria-label="Perbesar">+</button>
       <button id="zFit" aria-label="Sesuaikan lebar" title="Sesuaikan lebar">⤢</button>
     </div>
+    <button class="btn ghost sm" id="rDl" title="Unduh file asli">⬇ Unduh</button>
   </div>
-  <div id="stage"><div id="msg">Memuat dokumen…</div><canvas id="cv" hidden></canvas></div>
+  <div id="stage"><div id="msg">Memuat dokumen…</div><canvas id="cv" hidden></canvas><div id="tabs" hidden></div><div id="doc" hidden></div></div>
 </section>
 
 <script>
@@ -179,13 +202,22 @@ const H=(x={})=>({...(token?{Authorization:'Bearer '+token}:{}),...x});
 async function call(url,opt){const r=await fetch(url,opt);let j={};try{j=await r.json()}catch(e){}
   if(r.status===401&&token){token='';localStorage.removeItem('tugasToken');setAdmin(false)}
   if(!r.ok)throw new Error(j.error||'Gagal');return j}
+const MIME={pdf:'application/pdf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'};
+const J=()=>H({'Content-Type':'application/json'});
+// Unggah file langsung ke Supabase Storage (tidak lewat Vercel, jadi tidak terkena batas 4,5 MB)
+async function uploadFile(f){
+  const r=await call('/api/upload',{method:'POST',headers:J(),body:JSON.stringify({fileName:f.name,size:f.size})});
+  const fd=new FormData();fd.append('cacheControl','3600');fd.append('',new Blob([f],{type:r.mime}));
+  const up=await fetch(r.uploadUrl,{method:'PUT',body:fd});
+  if(!up.ok){let t='';try{t=(await up.json()).message||''}catch(e){}throw new Error('Upload ke penyimpanan gagal'+(t?': '+t:''))}
+  return r.path;
+}
 const store={
   async refresh(){items=await call('/api/tugas');render()},
-  async add(m,f){await call('/api/tugas',{method:'POST',headers:H({'Content-Type':'application/octet-stream','X-Meta':encodeURIComponent(JSON.stringify(m)),'X-Filename':encodeURIComponent(f.name)}),body:f});await this.refresh()},
-  async upd(id,m,f){if(f)await call('/api/tugas/'+id,{method:'PUT',headers:H({'Content-Type':'application/octet-stream','X-Meta':encodeURIComponent(JSON.stringify(m)),'X-Filename':encodeURIComponent(f.name)}),body:f});
-    else await call('/api/tugas/'+id,{method:'PUT',headers:H({'Content-Type':'application/json'}),body:JSON.stringify(m)});await this.refresh()},
+  async add(m,f){const path=await uploadFile(f);await call('/api/tugas',{method:'POST',headers:J(),body:JSON.stringify({title:m.title,desc:m.desc,path,fileName:f.name})});await this.refresh()},
+  async upd(id,m,f){const b={title:m.title,desc:m.desc};if(f){b.path=await uploadFile(f);b.fileName=f.name}await call('/api/tugas/'+id,{method:'PUT',headers:J(),body:JSON.stringify(b)});await this.refresh()},
   async del(id){await call('/api/tugas/'+id,{method:'DELETE',headers:H()});await this.refresh()},
-  async src(it){return{url:'/api/file/'+it.id}}
+  async src(it){const r=await call('/api/file/'+it.id+'?format=json');return{url:r.url}}
 };
 function setAdmin(v){canWrite=v;$('#up').hidden=$('#navUp').hidden=!v;$('#login').textContent=v?'Keluar':'Masuk Admin';$('#mode').textContent=v?'Mode admin aktif: Anda dapat mengunggah, mengedit, dan menghapus tugas.':'';render()}
 $('#login').onclick=()=>{if(canWrite){token='';localStorage.removeItem('tugasToken');setAdmin(false)}else{$('#lPw').value='';$('#lErr').textContent='';$('#ovLogin').classList.add('on');$('#lPw').focus()}};
@@ -205,16 +237,17 @@ function render(){
     return;
   }
   $('#list').innerHTML=list.map((i,n)=>`<article class="card task" style="animation-delay:${Math.min(n,8)*40}ms">
-    <div class="d">📅 ${fmt(i.createdAt)}</div><h3>${esc(i.title)}</h3><p>${esc(i.desc||'Tanpa deskripsi.')}</p>
+    <div class="d">📅 ${fmt(i.createdAt)}<span class="tag">${esc((i.fileType||'').toUpperCase())}</span></div><h3>${esc(i.title)}</h3><p>${esc(i.desc||'Tanpa deskripsi.')}</p>
     <div class="acts"><button class="btn sm" data-r="${esc(i.id)}">📖 Baca Tugas</button>
-    ${canWrite?`<button class="btn ghost sm" data-e="${esc(i.id)}" aria-label="Edit">✏️</button><button class="btn ghost sm" data-d="${esc(i.id)}" aria-label="Hapus">🗑️</button>`:''}</div></article>`).join('');
+    ${canWrite?`<button class="btn ghost sm" data-e="${esc(i.id)}" aria-label="Edit">✏️ Edit</button><button class="btn ghost sm" data-d="${esc(i.id)}" aria-label="Hapus">🗑️ Hapus</button>`:''}</div></article>`).join('');
 }
 $('#q').oninput=render;
 $('#list').onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
   const id=b.dataset.r||b.dataset.e||b.dataset.d,it=items.find(x=>x.id===id);if(!it)return;
-  if(b.dataset.r)openReader(it);else if(b.dataset.e)openForm(it);else{delId=id;$('#dTxt').textContent=`“${it.title}” akan dihapus permanen.`;$('#ovDel').classList.add('on')}
+  if(b.dataset.r)openReader(it);else if(b.dataset.e)openForm(it);else askDel(it)
 };
+function askDel(it){delId=it.id;$('#dTxt').textContent=`“${it.title}” akan dihapus permanen.`;$('#ovDel').classList.add('on')}
 
 /* ---------- Form upload / edit ---------- */
 let pick=null;
@@ -223,6 +256,7 @@ function openForm(it){
   $('#fTitle').textContent=it?'Edit Tugas':'Upload Tugas';
   $('#fJudul').value=it?it.title:'';$('#fDesc').value=it?it.desc||'':'';
   $('#fName').textContent='';$('#fErr').textContent='';$('#fFile').value='';
+  $('#fClear').hidden=true;$('#fDel').hidden=!it;$('#fCur').textContent=it?'File saat ini: '+(it.fileName||''):'';
   $('#fOpt').textContent=it?'(kosongkan jika tidak ingin mengganti)':'';
   $('#ovForm').classList.add('on');$('#fJudul').focus();
 }
@@ -236,10 +270,12 @@ const setFile=f=>{
     $('#fErr').textContent='Hanya file PDF, Word, atau Excel yang didukung.';
     return;
   }
-  if(f.size>20*1024*1024){$('#fErr').textContent='Ukuran file maksimal 20 MB.';return}
-  pick=f;$('#fName').textContent=f.name;$('#fErr').textContent=''
+  if(f.size>25*1024*1024){$('#fErr').textContent='Ukuran file maksimal 25 MB.';return}
+  pick=f;$('#fName').textContent=f.name;$('#fErr').textContent='';$('#fClear').hidden=false
 };
 
+$('#fClear').onclick=()=>{pick=null;$('#fFile').value='';$('#fName').textContent='';$('#fErr').textContent='';$('#fClear').hidden=true};
+$('#fDel').onclick=()=>{if(editing){const it=editing;$('#ovForm').classList.remove('on');askDel(it)}};
 $('#drop').onclick=()=>$('#fFile').click();
 $('#fFile').onchange=e=>setFile(e.target.files[0]);
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('h')};
@@ -260,31 +296,76 @@ $('#fSave').onclick=async()=>{
   b.disabled=false;b.textContent='Simpan';
 };
 $('#dNo').onclick=()=>$('#ovDel').classList.remove('on');
-$('#dYes').onclick=async()=>{try{await store.del(delId)}catch(e){alert('Gagal menghapus.')}$('#ovDel').classList.remove('on')};
+$('#dYes').onclick=async()=>{const b=$('#dYes');b.disabled=true;b.textContent='Menghapus…';
+  try{await store.del(delId)}catch(e){alert('Gagal menghapus: '+(e.message||'coba lagi.'))}
+  b.disabled=false;b.textContent='Hapus';$('#ovDel').classList.remove('on')};
 document.querySelectorAll('.ov').forEach(o=>o.addEventListener('mousedown',e=>{if(e.target===o)o.classList.remove('on')}));
 
-/* ---------- Canvas Reader (PDF.js) ---------- */
-let pdf=null,page=1,scale=1,fit=true,rendering=false,pending=false,tok=0;
-const cv=$('#cv'),stage=$('#stage');
+/* ---------- Pembaca dokumen: PDF (canvas), Word .docx, Excel .xlsx/.xls ---------- */
+let pdf=null,page=1,scale=1,fit=true,rendering=false,pending=false,tok=0,mode='pdf',docZ=1,curr=null;
+const cv=$('#cv'),stage=$('#stage'),docEl=$('#doc'),tabsEl=$('#tabs'),msgEl=$('#msg');
+const libs={};
+const loadScript=src=>libs[src]||(libs[src]=new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>{delete libs[src];no(new Error('Gagal memuat pustaka'))};document.head.appendChild(s)}));
+const showMsg=t=>{cv.hidden=docEl.hidden=tabsEl.hidden=true;msgEl.hidden=false;msgEl.textContent=t};
+function setMode(m){mode=m;$('#pgNav').hidden=$('#zFit').hidden=m!=='pdf';docZ=1;docEl.style.setProperty('--z',1);$('#zInfo').textContent='100%'}
+// Membersihkan HTML hasil konversi Word (buang script, event handler, dan link berbahaya)
+function sanitize(html){
+  const t=document.createElement('template');t.innerHTML=html;
+  t.content.querySelectorAll('script,style,iframe,object,embed,link,meta,form,base').forEach(n=>n.remove());
+  t.content.querySelectorAll('*').forEach(n=>{[...n.attributes].forEach(a=>{
+    const k=a.name.toLowerCase(),v=a.value.trim().toLowerCase();
+    if(k.startsWith('on')||k==='style')n.removeAttribute(a.name);
+    else if((k==='href'||k==='src'||k==='xlink:href')&&!/^(https?:|mailto:|#|data:image\/)/.test(v))n.removeAttribute(a.name)})});
+  t.content.querySelectorAll('a[href]').forEach(a=>{a.target='_blank';a.rel='noopener noreferrer'});
+  return t.innerHTML;
+}
 async function openReader(it){
-  // Cek apakah file berupa PDF atau bukan (.doc/.docx/.xls/.xlsx langsung diunduh/dibuka tab baru karena butuh office viewer khusus)
-  if(!it.fileName.toLowerCase().endsWith('.pdf')){
-    window.open('/api/file/'+it.id, '_blank');
-    return;
-  }
-  
+  const type=String(it.fileType||it.fileName.split('.').pop()).toLowerCase();
+  curr=it;const my=++tok;pdf=null;docEl.replaceChildren();tabsEl.replaceChildren();
   $('#reader').classList.add('on');document.body.style.overflow='hidden';
-  $('#rTitle').textContent=it.title;cv.hidden=true;$('#msg').hidden=false;$('#msg').textContent='Memuat dokumen…';
-  const my=++tok;pdf=null;
+  $('#rTitle').textContent=it.title;setMode(type==='pdf'?'pdf':'doc');showMsg('Memuat dokumen…');stage.scrollTop=0;
   try{
-    pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.min.js';
+    if(type==='doc'){showMsg('Format Word lama (.doc) tidak bisa ditampilkan langsung di browser. Simpan ulang sebagai .docx, atau klik “Unduh”.');return}
     const s=await store.src(it);
-    let data=s.data;
-    if(!data){const r=await fetch(s.url);if(!r.ok)throw 0;data=await r.arrayBuffer()}
-    const d=await pdfjsLib.getDocument({data}).promise;
-    if(my!==tok)return;
-    pdf=d;page=1;fit=true;$('#msg').hidden=true;cv.hidden=false;draw();
-  }catch(e){$('#msg').textContent='Dokumen tidak dapat dibuka.'}
+    const r=await fetch(s.url);if(!r.ok)throw new Error('fetch');
+    const data=await r.arrayBuffer();if(my!==tok)return;
+    if(type==='pdf'){
+      pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.min.js';
+      const d=await pdfjsLib.getDocument({data}).promise;if(my!==tok)return;
+      pdf=d;page=1;fit=true;msgEl.hidden=true;cv.hidden=false;draw();
+    }else if(type==='docx')await showDocx(data,my);
+    else if(type==='xlsx'||type==='xls')await showSheet(data,my);
+    else showMsg('Format file ini tidak bisa ditampilkan.');
+  }catch(e){if(my===tok)showMsg('Dokumen tidak dapat dibuka. Coba lagi, atau klik “Unduh”.')}
+}
+async function showDocx(buf,my){
+  await loadScript('lib/mammoth.browser.min.js');
+  const r=await mammoth.convertToHtml({arrayBuffer:buf},{styleMap:["p[style-name='Title'] => h1:fresh","p[style-name='Subtitle'] => h2:fresh"]});if(my!==tok)return;
+  docEl.className='';docEl.innerHTML=sanitize(r.value)||'<p>(Dokumen ini kosong)</p>';
+  msgEl.hidden=true;docEl.hidden=false;
+}
+const colName=n=>{let s='';n++;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s};
+async function showSheet(buf,my){
+  await loadScript('lib/xlsx.full.min.js');
+  const wb=XLSX.read(buf,{type:'array',cellDates:true});if(my!==tok)return;
+  const names=wb.SheetNames;if(!names.length)throw new Error('kosong');
+  const MAXR=2000;
+  const view=i=>{
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[names[i]],{header:1,raw:false,defval:''});
+    const cols=Math.min(60,rows.reduce((m,r)=>Math.max(m,r.length),0));
+    const t=document.createElement('table'),hd=document.createElement('thead'),hr=document.createElement('tr');
+    hr.appendChild(document.createElement('th'));
+    for(let c=0;c<cols;c++){const h=document.createElement('th');h.textContent=colName(c);hr.appendChild(h)}
+    hd.appendChild(hr);t.appendChild(hd);
+    const tb=document.createElement('tbody');
+    rows.slice(0,MAXR).forEach((r,ri)=>{const tr=document.createElement('tr'),n=document.createElement('th');n.textContent=ri+1;tr.appendChild(n);
+      for(let c=0;c<cols;c++){const td=document.createElement('td');td.textContent=r[c]==null?'':String(r[c]);tr.appendChild(td)}tb.appendChild(tr)});
+    t.appendChild(tb);docEl.replaceChildren(t);
+    if(rows.length>MAXR){const p=document.createElement('p');p.style.cssText='padding:10px;color:#6b7280';p.textContent=`Menampilkan ${MAXR} dari ${rows.length} baris. Unduh file untuk melihat semuanya.`;docEl.appendChild(p)}
+    [...tabsEl.children].forEach((b,k)=>b.classList.toggle('on',k===i));
+  };
+  names.forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{view(i);stage.scrollTop=0};tabsEl.appendChild(b)});
+  docEl.className='sheet';view(0);msgEl.hidden=true;docEl.hidden=false;tabsEl.hidden=names.length<2;
 }
 async function draw(){
   if(!pdf)return;if(rendering){pending=true;return}
@@ -302,12 +383,16 @@ async function draw(){
   if(pending){pending=false;draw()}
 }
 const go=n=>{if(!pdf)return;page=Math.min(pdf.numPages,Math.max(1,n));stage.scrollTop=0;draw()};
-const zoom=f=>{fit=false;scale=Math.min(4,Math.max(.3,scale*f));draw()};
+const zoom=f=>{
+  if(mode==='doc'){docZ=Math.min(2.5,Math.max(.6,docZ*f));docEl.style.setProperty('--z',docZ);$('#zInfo').textContent=Math.round(docZ*100)+'%';return}
+  fit=false;scale=Math.min(4,Math.max(.3,scale*f));draw()
+};
 $('#pPrev').onclick=()=>go(page-1);$('#pNext').onclick=()=>go(page+1);
 $('#zIn').onclick=()=>zoom(1.2);$('#zOut').onclick=()=>zoom(1/1.2);
 $('#zFit').onclick=()=>{fit=true;draw()};
+$('#rDl').onclick=()=>{if(!curr)return;const a=document.createElement('a');a.href='/api/file/'+encodeURIComponent(curr.id)+'?download=1';document.body.appendChild(a);a.click();a.remove()};
 $('#rBack').onclick=closeReader;
-function closeReader(){$('#reader').classList.remove('on');document.body.style.overflow='';pdf=null;tok++}
+function closeReader(){$('#reader').classList.remove('on');document.body.style.overflow='';pdf=null;curr=null;tok++;docEl.replaceChildren();tabsEl.replaceChildren()}
 addEventListener('keydown',e=>{
   if(!$('#reader').classList.contains('on'))return;
   if(e.key==='Escape')closeReader();
